@@ -3,7 +3,7 @@ CCFLAG = -Wall -g
 # LOCFLAG = -I
 OBJECT = maze.o
 
-maze: maze.o
+maze.exe: maze.o
 	$(CC) $(CCFLAG) -o maze $(OBJECT)
 
 maze.o: maze.c sqstack.h

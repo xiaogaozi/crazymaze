@@ -3,19 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "sqstack.h"
 
-#define YES 1
-#define NO 0
-#define COLUMN 50
-
-typedef struct
-{
-  int x;
-  int y;
-}Point;
-
-int step;
-int stepset[100];
+#define SUCCESS 1
+#define FAIL 0
+#define COLUMN 20
 
 void CreateMaze(SElemType (*maze)[COLUMN], int row, int col)
 {
@@ -66,23 +58,23 @@ void PrintMaze(SElemType (*maze)[COLUMN], int row, int col)
         switch (maze[i][j].direction)
         {
           case 1 :
-            printf("‚Üí ");
+            printf("°˙");
             break;
           case 2 :
-            printf("‚Üì ");
+            printf("°˝");
             break;
           case 3 :
-            printf("‚Üê ");
+            printf("°˚");
             break;
           case 4 :
-            printf("‚Üë ");
+            printf("°¸");
             break;
           default :
-            printf("Ôø•");
+            printf("£§");
         }
       }
       else if (maze[i][j].grid)
-        printf("‚ñá ");
+        printf("°ˆ");
       else
         printf("  ");
     }
@@ -124,103 +116,41 @@ SElemType NextPosition(SElemType (*maze)[COLUMN], int i, int j)
   }
 }
 
-// Status Maze(SElemType (*maze)[COLUMN], SqStack* path, int row, int col)
-// {
-//   SElemType point, e;
-//   int i, j;
-// 
-//   point = maze[1][1];
-//   Push(path, maze[1][1]);
-//   do
-//   {
-//     GetTop(*path, &point);
-//     i = point.i;
-//     j = point.j;
-//     maze[i][j].pass = 1;
-// 
-//     point = NextPosition(maze, i, j);
-//     if (!point.i && !point.j)
-//       Pop(path, &e);
-//     else if (point.i == row - 2 && point.j == col - 2)
-//     {
-//       Push(path, point);
-//       return SUCCESS;
-//     }
-//     else
-//       Push(path, point);
-//   }
-//   while (!StackEmpty(*path));
-// 
-//   return FAIL;
-// }
-
-Status CanMove(int direction, Point* p)
+Status Maze(SElemType (*maze)[COLUMN], SqStack* path, int row, int col)
 {
-  switch (direction)
-  {
-    case 0 :
-      if (!maze[i][j + 1].grid && !maze[i][j + 1].pass)
-      {
-        maze[i][j].direction = 1;
-        return maze[i][j + 1];
-      }
-      break;
-    case 1 :
-      if (!maze[i + 1][j].grid && !maze[i + 1][j].pass)
-      {
-        maze[i][j].direction = 2;
-        return maze[i + 1][j];
-      }
-      break;
-    case 2 :
-      if (!maze[i][j - 1].grid && !maze[i][j - 1].pass)
-      {
-        maze[i][j].direction = 3;
-        return maze[i][j - 1];
-      }
-      break;
-    case 3 :
-      if (!maze[i - 1][j].grid && !maze[i - 1][j].pass)
-      {
-        maze[i][j].direction = 4;
-        return maze[i - 1][j];
-      }
-      break;
-    default :
-      return maze[0][0];
-  }
-}
+  SElemType point, e;
+  int i, j;
 
-void Maze(Point p)
-{
-  int direction = 0;
-  int i = 0;
+  point = maze[1][1];
+  Push(path, maze[1][1]);
+  do
+  {
+    GetTop(*path, &point);
+    i = point.i;
+    j = point.j;
+    maze[i][j].pass = 1;
 
-  if (p == end)
-  {
-    while (stepset[i])
-      ++i;
-    stepset[i] = step;
-    --step;
+    point = NextPosition(maze, i, j);
+    if (!point.i && !point.j)
+      Pop(path, &e);
+    else if (point.i == row - 2 && point.j == col - 2)
+    {
+      Push(path, point);
+      return SUCCESS;
+    }
+    else
+      Push(path, point);
   }
-  else
-  {
-    for (; direction != 4; ++direction)
-      if (CanMove(direction, &p))
-      {
-        ++step;
-        Maze(NextPosition(p));
-      }
-      else
-        --step;
-  }
+  while (!StackEmpty(*path));
+
+  return FAIL;
 }
 
 int main()
 {
   srand(time(NULL));
 
-  int row = rand() % 47 + 4, col = COLUMN;
+  int row = rand() % 17 + 4, col = COLUMN;
   // SElemType* maze = (SElemType*) malloc(row * sizeof(col * sizeof(SElemType)));
   SElemType maze[row][col];
 
@@ -246,13 +176,13 @@ int main()
     {
       Pop(&pathway, &e);
       maze[e.i][e.j].pass = 2;
-      system("clear");
+      system("cls");
       PrintMaze(maze, row, col);
-      system("sleep 0.5s");
     }
   }
   else
     printf("no way\n");
 
+  system("pause");
   return 0;
 }
