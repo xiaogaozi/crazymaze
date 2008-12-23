@@ -15,11 +15,11 @@
 
 typedef struct
 {
-  int grid;  // grid=1: barrier  grid=0: pathway
-  int direction;
-  int pass;  // pass=1: have passed  pass=0: haven't passed
-  int i;
-  int j;
+  int grid;            // grid=1: wall  grid=0: pathway
+  int direction;       // 0=east, 1=south, 2=west, 3=north, 4=can't go
+  int pass; // pass=1: have passed  pass=0: haven't passed  pass=2: is the right pathway
+  int i;    // coordinate x
+  int j;    // coordinate y
 }SElemType;
 typedef int Status;
 typedef struct
